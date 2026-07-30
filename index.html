@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyEnglish - 나만의 영어학습</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- 헤더 -->
+        <header class="app-header">
+            <div class="logo" onclick="showScreen('dashboard')">
+                <span class="logo-icon">📚</span>
+                <span class="logo-text">MyEnglish</span>
+            </div>
+            <div class="header-stats">
+                <div class="stat-item" title="연속 학습일">
+                    <span class="stat-icon">🔥</span>
+                    <span id="streak-count">0</span>
+                </div>
+                <div class="stat-item" title="총 XP">
+                    <span class="stat-icon">⭐</span>
+                    <span id="total-xp">0</span>
+                </div>
+                <div class="stat-item" title="레벨">
+                    <span class="stat-icon">🏆</span>
+                    <span>Lv.<span id="current-level">1</span></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 메인 콘텐츠 -->
+        <main class="main-content">
+            <!-- 대시보드 화면 -->
+            <section id="screen-dashboard" class="screen active">
+                <div class="dashboard">
+                    <div class="welcome-section">
+                        <h1>오늘도 영어 공부 화이팅! 💪</h1>
+                        <p class="subtitle">학습하고 싶은 모드를 선택하세요</p>
+                    </div>
+
+                    <div class="progress-overview">
+                        <h2>나의 진행도</h2>
+                        <div class="level-progress">
+                            <div class="level-bar">
+                                <div id="level-progress-bar" class="level-bar-fill" style="width: 0%"></div>
+                            </div>
+                            <span id="level-progress-text">0 / 100 XP</span>
+                        </div>
+                    </div>
+
+                    <div class="mode-cards">
+                        <div class="mode-card conversation" onclick="startMode('conversation')">
+                            <div class="mode-icon">💬</div>
+                            <h3>회화 연습</h3>
+                            <p>상황별 대화로 실전 영어</p>
+                            <div class="mode-level">
+                                <span id="conv-level">Lv.1</span>
+                            </div>
+                        </div>
+
+                        <div class="mode-card listening" onclick="startMode('listening')">
+                            <div class="mode-icon">🎧</div>
+                            <h3>듣기 연습</h3>
+                            <p>영어 문장을 듣고 이해하기</p>
+                            <div class="mode-level">
+                                <span id="listen-level">Lv.1</span>
+                            </div>
+                        </div>
+
+                        <div class="mode-card vocabulary" onclick="startMode('vocabulary')">
+                            <div class="mode-icon">📝</div>
+                            <h3>단어 학습</h3>
+                            <p>여행·생활 필수 어휘</p>
+                            <div class="mode-level">
+                                <span id="vocab-level">Lv.1</span>
+                            </div>
+                        </div>
+
+                        <div class="mode-card grammar" onclick="startMode('grammar')">
+                            <div class="mode-icon">📖</div>
+                            <h3>핵심 문법</h3>
+                            <p>회화에 꼭 필요한 패턴</p>
+                            <div class="mode-level">
+                                <span id="gram-level">Lv.1</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="today-stats">
+                        <h2>오늘의 학습</h2>
+                        <div class="today-grid">
+                            <div class="today-item">
+                                <span class="today-number" id="today-lessons">0</span>
+                                <span class="today-label">완료 레슨</span>
+                            </div>
+                            <div class="today-item">
+                                <span class="today-number" id="today-xp">0</span>
+                                <span class="today-label">획득 XP</span>
+                            </div>
+                            <div class="today-item">
+                                <span class="today-number" id="today-correct">0%</span>
+                                <span class="today-label">정답률</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 회화 연습 화면 -->
+            <section id="screen-conversation" class="screen">
+                <div class="lesson-container">
+                    <div class="lesson-header">
+                        <button class="btn-back" onclick="showScreen('dashboard')">← 돌아가기</button>
+                        <div class="lesson-progress">
+                            <div class="progress-bar">
+                                <div id="conv-progress-bar" class="progress-fill"></div>
+                            </div>
+                            <span id="conv-progress-text">1/5</span>
+                        </div>
+                    </div>
+
+                    <div class="topic-selector" id="conv-topic-selector">
+                        <h2>💬 회화 연습</h2>
+                        <p>상황을 선택하세요</p>
+                        <div class="topic-grid" id="conv-topics"></div>
+                    </div>
+
+                    <div class="lesson-body" id="conv-lesson-body" style="display:none;">
+                        <div class="situation-badge" id="conv-situation"></div>
+                        <div class="dialogue-box" id="conv-dialogue"></div>
+                        <div class="question-area" id="conv-question"></div>
+                        <div class="answer-area" id="conv-answer"></div>
+                        <div class="feedback-area" id="conv-feedback"></div>
+                        <button class="btn-next" id="conv-next-btn" onclick="nextConversation()" style="display:none;">다음 →</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 듣기 연습 화면 -->
+            <section id="screen-listening" class="screen">
+                <div class="lesson-container">
+                    <div class="lesson-header">
+                        <button class="btn-back" onclick="showScreen('dashboard')">← 돌아가기</button>
+                        <div class="lesson-progress">
+                            <div class="progress-bar">
+                                <div id="listen-progress-bar" class="progress-fill"></div>
+                            </div>
+                            <span id="listen-progress-text">1/5</span>
+                        </div>
+                    </div>
+
+                    <div class="topic-selector" id="listen-topic-selector">
+                        <h2>🎧 듣기 연습</h2>
+                        <p>주제를 선택하세요</p>
+                        <div class="topic-grid" id="listen-topics"></div>
+                    </div>
+
+                    <div class="lesson-body" id="listen-lesson-body" style="display:none;">
+                        <div class="listening-area">
+                            <button class="btn-play" id="listen-play-btn" onclick="playListening()">
+                                🔊 듣기
+                            </button>
+                            <button class="btn-play-slow" onclick="playListeningSlow()">
+                                🐢 천천히 듣기
+                            </button>
+                        </div>
+                        <div class="question-area" id="listen-question"></div>
+                        <div class="answer-area" id="listen-answer"></div>
+                        <div class="feedback-area" id="listen-feedback"></div>
+                        <button class="btn-next" id="listen-next-btn" onclick="nextListening()" style="display:none;">다음 →</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 단어 학습 화면 -->
+            <section id="screen-vocabulary" class="screen">
+                <div class="lesson-container">
+                    <div class="lesson-header">
+                        <button class="btn-back" onclick="showScreen('dashboard')">← 돌아가기</button>
+                        <div class="lesson-progress">
+                            <div class="progress-bar">
+                                <div id="vocab-progress-bar" class="progress-fill"></div>
+                            </div>
+                            <span id="vocab-progress-text">1/10</span>
+                        </div>
+                    </div>
+
+                    <div class="topic-selector" id="vocab-topic-selector">
+                        <h2>📝 단어 학습</h2>
+                        <p>주제를 선택하세요</p>
+                        <div class="topic-grid" id="vocab-topics"></div>
+                    </div>
+
+                    <div class="lesson-body" id="vocab-lesson-body" style="display:none;">
+                        <div id="vocab-card-area"></div>
+                        <div class="answer-area" id="vocab-answer"></div>
+                        <div class="feedback-area" id="vocab-feedback"></div>
+                        <button class="btn-next" id="vocab-next-btn" onclick="nextVocab()" style="display:none;">다음 →</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 문법 학습 화면 -->
+            <section id="screen-grammar" class="screen">
+                <div class="lesson-container">
+                    <div class="lesson-header">
+                        <button class="btn-back" onclick="showScreen('dashboard')">← 돌아가기</button>
+                        <div class="lesson-progress">
+                            <div class="progress-bar">
+                                <div id="gram-progress-bar" class="progress-fill"></div>
+                            </div>
+                            <span id="gram-progress-text">1/5</span>
+                        </div>
+                    </div>
+
+                    <div class="topic-selector" id="gram-topic-selector">
+                        <h2>📖 핵심 문법</h2>
+                        <p>패턴을 선택하세요</p>
+                        <div class="topic-grid" id="gram-topics"></div>
+                    </div>
+
+                    <div class="lesson-body" id="gram-lesson-body" style="display:none;">
+                        <div class="grammar-explanation" id="gram-explanation"></div>
+                        <div class="question-area" id="gram-question"></div>
+                        <div class="answer-area" id="gram-answer"></div>
+                        <div class="feedback-area" id="gram-feedback"></div>
+                        <button class="btn-next" id="gram-next-btn" onclick="nextGrammar()" style="display:none;">다음 →</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 레슨 완료 화면 -->
+            <section id="screen-complete" class="screen">
+                <div class="complete-container">
+                    <div class="complete-icon">🎉</div>
+                    <h2>레슨 완료!</h2>
+                    <div class="complete-stats">
+                        <div class="complete-stat">
+                            <span class="complete-number" id="complete-correct">0</span>
+                            <span class="complete-label">정답</span>
+                        </div>
+                        <div class="complete-stat">
+                            <span class="complete-number" id="complete-total">0</span>
+                            <span class="complete-label">문제</span>
+                        </div>
+                        <div class="complete-stat">
+                            <span class="complete-number" id="complete-xp">+0</span>
+                            <span class="complete-label">XP</span>
+                        </div>
+                    </div>
+                    <div class="complete-buttons">
+                        <button class="btn-primary" onclick="showScreen('dashboard')">대시보드로</button>
+                        <button class="btn-secondary" id="btn-retry" onclick="retryLesson()">다시 하기</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
